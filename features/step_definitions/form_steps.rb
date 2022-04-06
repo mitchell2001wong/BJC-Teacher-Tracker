@@ -45,3 +45,10 @@ end
 Then(/the "(.*)" of the user with email "(.*)" should be "(.*)"/) do |field, email, expected|
   expect(Teacher.find_by(email: email)[field]).to eq(expected)
 end
+
+Then /^"([^"]*)" should( not)? be an option for "([^"]*)"(?: within "([^\"]*)")?$/ do |value, negate, field, selector|
+  with_scope(selector) do
+    expectation = negate ? :should_not : :should
+    field_labeled(field).first(:xpath, ".//option[text() = '#{value}']").send(expectation, be_present)
+  end
+end
